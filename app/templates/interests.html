@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Received Interests</h1>
+    <ul>
+        {% for interest in interests %}
+            <li>
+                From: {{ interest.sender_id.username }}<br>
+                Message: {{ interest.message }}<br>
+                Status: {{ interest.status }}<br>
+                {% if interest.status == 'pending' %}
+                    <a href="{{ url_for('accept_interest', interest_id=interest.id) }}">Accept</a>
+                    <a href="{{ url_for('reject_interest', interest_id=interest.id) }}">Reject</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

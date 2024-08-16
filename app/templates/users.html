@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Users</h1>
+    <ul>
+        {% for user in users %}
+            <li>
+                {{ user.username }}
+                <a href="{{ url_for('send_interest', user_id=user.id) }}">Send Interest</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

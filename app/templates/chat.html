@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Chat with {{ recipient.username }}</h2>
+    <div id="messages"></div>
+    <form id="message-form">
+        <input id="message-input" type="text" placeholder="Type your message..." autocomplete="off" />
+        <button type="submit">Send</button>
+    </form>
+
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+
+        document.getElementById('message-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value;
+            messageInput.value = '';
+            socket.emit('send_message', { message: message, recipient_id: '{{ recipient.id }}' });
+        });
+
+        socket.on('receive_message', function(data) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = data.message;
+            document.getElementById('messages').appendChild(messageElement);
+        });
+
+        // Optionally, load previous messages
+        socket.emit('load_messages', { recipient_id: '{{ recipient.id }}' });
+        
+        socket.on('load_messages', function(messages) {
+            const messagesContainer = document.getElementById('messages');
+            messages.forEach(msg => {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = msg.content;
+                messagesContainer.appendChild(messageElement);
+            });
+        });
+    </script>
+{% endblock %}
